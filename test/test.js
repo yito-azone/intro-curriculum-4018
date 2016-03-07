@@ -3,6 +3,8 @@ let request = require('supertest');
 let app = require('../app');
 let passportStub = require('passport-stub');
 let User = require('../models/user');
+let Schedule = require('../models/schedule');
+let Candidate = require('../models/candidate');
 
 describe('/login', () => {
   before(() => {
@@ -61,9 +63,20 @@ describe('/schedules', () => {
         .end((err, res) => {
           let createdSchedulePath = res.headers.location;
           request(app)
-          .get(createdSchedulePath)
-          // TODO 作成された予定と候補が表示されていることをテストする
-          .expect(200, done);
+            .get(createdSchedulePath)
+            // TODO 作成された予定と候補が表示されていることをテストする
+            .expect(200)
+            .end(() => {
+              // テストで作成したデータを削除
+              let scheduleId = createdSchedulePath.split('/schedules/')[1];
+              Candidate.findAll({
+                where: { scheduleId: scheduleId }
+              }).then((candidates) => {
+                candidates.forEach((c) => { c.destroy(); });
+                Schedule.findById(scheduleId).then((s) => { s.destroy(); });
+              });
+              done();
+            });
         });
     });
   });
