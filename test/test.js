@@ -66,7 +66,7 @@ describe('/schedules', () => {
             .get(createdSchedulePath)
             // TODO 作成された予定と候補が表示されていることをテストする
             .expect(200)
-            .end(() => {
+            .end((err, res) => {
               // テストで作成したデータを削除
               let scheduleId = createdSchedulePath.split('/schedules/')[1];
               Candidate.findAll({
@@ -75,6 +75,7 @@ describe('/schedules', () => {
                 candidates.forEach((c) => { c.destroy(); });
                 Schedule.findById(scheduleId).then((s) => { s.destroy(); });
               });
+              if (err) return done(err);
               done();
             });
         });
