@@ -24,7 +24,6 @@ User.sync().then(() => {
   });
 });
 
-
 var GitHubStrategy = require('passport-github2').Strategy;
 var GITHUB_CLIENT_ID = '2f831cb3d4aac02393aa';
 var GITHUB_CLIENT_SECRET = '9fbc340ac0175123695d2dedfbdf5a78df3b8067';
@@ -58,7 +57,7 @@ passport.use(new GitHubStrategy({
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
-var schedules = require('./routes/schedules');
+var schedulesRouter = require('./routes/schedules');
 
 var app = express();
 app.use(helmet());
@@ -80,7 +79,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
-app.use('/schedules', schedules);
+app.use('/schedules', schedulesRouter);
 
 app.get('/auth/github',
   passport.authenticate('github', { scope: ['user:email'] }),
