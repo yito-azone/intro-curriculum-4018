@@ -73,10 +73,7 @@ describe('/schedules', () => {
               Candidate.findAll({
                 where: { scheduleId: scheduleId }
               }).then((candidates) => {
-                const promises = [];
-                candidates.forEach((c) => { 
-                  promises.push(c.destroy());
-                });
+                const promises = candidates.map((c) => { return c.destroy(); });
                 Promise.all(promises).then(() => {
                   Schedule.findById(scheduleId).then((s) => { 
                     s.destroy().then(() => { 
