@@ -67,16 +67,24 @@ describe('/schedules', () => {
             // TODO 作成された予定と候補が表示されていることをテストする
             .expect(200)
             .end((err, res) => {
+              if (err) return done(err);
               // テストで作成したデータを削除
-              let scheduleId = createdSchedulePath.split('/schedules/')[1];
+              const scheduleId = createdSchedulePath.split('/schedules/')[1];
               Candidate.findAll({
                 where: { scheduleId: scheduleId }
               }).then((candidates) => {
-                candidates.forEach((c) => { c.destroy(); });
-                Schedule.findById(scheduleId).then((s) => { s.destroy(); });
+                const promises = [];
+                candidates.forEach((c) => { 
+                  promises.push(c.destroy());
+                });
+                Promise.all(promises).then(() => {
+                  Schedule.findById(scheduleId).then((s) => { 
+                    s.destroy().then(() => { 
+                      done(); 
+                    });
+                  });
+                });
               });
-              if (err) return done(err);
-              done();
             });
         });
     });
