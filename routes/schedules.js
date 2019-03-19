@@ -16,7 +16,7 @@ router.post('/', authenticationEnsurer, (req, res, next) => {
   const updatedAt = new Date();
   Schedule.create({
     scheduleId: scheduleId,
-    scheduleName: req.body.scheduleName.slice(0, 255),
+    scheduleName: req.body.scheduleName.slice(0, 255) || '（名称未設定）',
     memo: req.body.memo,
     createdBy: req.user.id,
     updatedAt: updatedAt
