@@ -77,6 +77,7 @@ describe('/schedules', () => {
                 Promise.all(promises).then(() => {
                   Schedule.findByPk(scheduleId).then((s) => { 
                     s.destroy().then(() => { 
+                      if (err) return done(err);
                       done(); 
                     });
                   });
