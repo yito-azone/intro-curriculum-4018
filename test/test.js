@@ -23,7 +23,7 @@ describe('/login', () => {
       .expect(/<a href="\/auth\/github"/)
       .expect(200);
   });
-  
+
   test('ログイン時はユーザー名が表示される', () => {
     return request(app)
       .get('/login')
