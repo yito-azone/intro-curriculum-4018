@@ -1,21 +1,22 @@
 'use strict';
-let request = require('supertest');
-let app = require('../app');
-let passportStub = require('passport-stub');
-let User = require('../models/user');
-let Schedule = require('../models/schedule');
-let Candidate = require('../models/candidate');
+const request = require('supertest');
+const app = require('../app');
+const passportStub = require('passport-stub');
+const User = require('../models/user');
+const Schedule = require('../models/schedule');
+const Candidate = require('../models/candidate');
 
 describe('/login', () => {
   beforeAll(() => {
     passportStub.install(app);
     passportStub.login({ username: 'testuser' });
-  });
+   });
 
   afterAll(() => {
     passportStub.logout();
     passportStub.uninstall(app);
   });
+
   test('ログインのためのリンクが含まれる', () => {
     return request(app)
       .get('/login')
@@ -93,3 +94,4 @@ describe('/schedules', () => {
     });
   });
 });
+
