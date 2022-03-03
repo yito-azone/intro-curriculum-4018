@@ -64,7 +64,7 @@ describe('/schedules', () => {
       })
       .expect('Location', /schedules/)
       .expect(302)
-      .end((err, res) => {
+      .end(async (err, res) => {
         const createdSchedulePath = res.headers.location;
         request(app)
           .get(createdSchedulePath)
