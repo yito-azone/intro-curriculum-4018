@@ -43,7 +43,7 @@ describe('/logout', () => {
 });
 
 describe('/schedules', () => {
-  let scheduleId;
+  let scheduleId = '';
   beforeAll(() => {
     passportStub.install(app);
     passportStub.login({ id: 0, username: 'testuser' });
