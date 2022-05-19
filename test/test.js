@@ -57,7 +57,7 @@ describe('/schedules', () => {
     const candidates = await Candidate.findAll({
       where: { scheduleId: scheduleId }
     });
-    const promises = candidates.map(c => {
+    const promises = candidates.map((c) => {
       return c.destroy();
     });
     await Promise.all(promises)
