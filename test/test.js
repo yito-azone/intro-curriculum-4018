@@ -14,7 +14,7 @@ describe('/login', () => {
 
   afterAll(() => {
     passportStub.logout();
-    passportStub.uninstall(app);
+    passportStub.uninstall();
   });
 
   test('ログインのためのリンクが含まれる', async () => {
@@ -51,7 +51,7 @@ describe('/schedules', () => {
 
   afterAll(async () => {
     passportStub.logout();
-    passportStub.uninstall(app);
+    passportStub.uninstall();
 
     // テストで作成したデータを削除
     const candidates = await Candidate.findAll({
