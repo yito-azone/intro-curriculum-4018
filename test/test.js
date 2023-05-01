@@ -73,13 +73,13 @@ describe('/schedules', () => {
         candidates: 'テスト候補1\r\nテスト候補2\r\nテスト候補3'
       })
       .expect('Location', /schedules/)
-      .expect(302)
+      .expect(302);
 
     const createdSchedulePath = res.headers.location;
     scheduleId = createdSchedulePath.split('/schedules/')[1];
     await request(app)
       .get(createdSchedulePath)
       // TODO 作成された予定と候補が表示されていることをテストする
-      .expect(200)
+      .expect(200);
   });
 });
