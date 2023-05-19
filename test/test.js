@@ -2,9 +2,8 @@
 const request = require('supertest');
 const app = require('../app');
 const passportStub = require('passport-stub');
-const User = require('../models/user');
-const Schedule = require('../models/schedule');
-const Candidate = require('../models/candidate');
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient({ log: [ 'query' ] });
 
 describe('/login', () => {
   beforeAll(() => {
@@ -25,7 +24,7 @@ describe('/login', () => {
       .expect(200);
   });
 
-  test('ログイン時はユーザー名が表示される', async () => {
+  test('ログイン時はユーザ名が表示される', async () => {
     await request(app)
       .get('/login')
       .expect(/testuser/)
@@ -54,19 +53,18 @@ describe('/schedules', () => {
     passportStub.uninstall();
 
     // テストで作成したデータを削除
-    const candidates = await Candidate.findAll({
-      where: { scheduleId: scheduleId }
-    });
-    const promises = candidates.map((c) => {
-      return c.destroy();
-    });
-    await Promise.all(promises)
-    const s = await Schedule.findByPk(scheduleId)
-    await s.destroy()
+    await prisma.candidate.deleteMany({ where: { scheduleId } });
+    await prisma.schedule.delete({ where: { scheduleId } });
   });
 
   test('予定が作成でき、表示される', async () => {
-    await User.upsert({ userId: 0, username: 'testuser' });
+    const userId = 0, username = 'testuser';
+    const data = { userId, username };
+    await prisma.user.upsert({
+      where: { userId },
+      create: data,
+      update: data
+    });
     const res = await request(app)
       .post('/schedules')
       .send({
@@ -75,14 +73,13 @@ describe('/schedules', () => {
         candidates: 'テスト候補1\r\nテスト候補2\r\nテスト候補3'
       })
       .expect('Location', /schedules/)
-      .expect(302)
+      .expect(302);
 
     const createdSchedulePath = res.headers.location;
     scheduleId = createdSchedulePath.split('/schedules/')[1];
     await request(app)
       .get(createdSchedulePath)
       // TODO 作成された予定と候補が表示されていることをテストする
-      .expect(200)
+      .expect(200);
   });
 });
-
